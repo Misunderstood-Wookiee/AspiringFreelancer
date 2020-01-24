@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Universal Race Discovery for X4, Created by Misunderstood Wookiee/Ledhead900 -->
+<mdscript name="UniversalFactionDiscovery" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="G:\Documents\Personal\Dev Projects\X4 Foundations Dev\xsds\md.xsd">
+    <!-- Routines for basic faction discovery gameplay -->
+    <cues>
+        <cue name="DiscoverFaction" instantiate="true">
+            <conditions>
+                <event_player_discovered_object />
+            </conditions>
+            <actions>
+                <debug_to_file name="'UFD'" directory="'Universal_Faction_Discovery'" text="'Discoverd Faction %1 with scan level %2'.[event.param.owner,event.param2]" output="false" append="true" />
+                <!-- Get Faction info from target scan -->
+                <!-- event.param2 is the scan level - 0 if discovered, 1 and greater for active scan (depends on scanner type used) -->
+                <do_if value="event.param2 gt 0">
+                    <do_if value="not event.param.owner.known">
+                        <!-- event.param is the Object which was scanned, check if its faction is not known -->
+                        <set_faction_known faction="event.param.owner" known="true" />
+                        <debug_to_file name="'UFD'" directory="'Universal_Faction_Discovery'" text="'Unlocked Faction %1'.[event.param.owner]" output="false" append="true" />
+                    </do_if>
+                </do_if>
+            </actions>
+        </cue>
+    </cues>
+</mdscript>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mdscript name="AFSSetup" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="C:\Program Files (x86)\Steam\steamapps\common\X4 Foundations Dev\xsds\md.xsd">
+	<cues>
+		<cue name="Aspired_Freelance_Start_Initial_Setup" module="x4ep1_gamestart_AFS">
+			<conditions>
+				<event_cue_signalled cue="md.Setup.GameStart" />
+			</conditions>
+			<actions>
+				<debug_to_file name="'AFS'" directory="'AFS'" text="' '" output="false" append="true" />
+				<debug_to_file name="'AFS'" directory="'AFS'" text="' '" output="false" append="true" />
+				<debug_to_file name="'AFS'" directory="'AFS'" text="' '" output="false" append="true" />
+				<debug_to_file name="'AFS'" directory="'AFS'" text="'Initial Setup'" output="false" append="true" />
+				<!-- Setup Kown Factions -->
+				<debug_to_file name="'AFS'" directory="'AFS'" text="'Setting Known Factions'" output="false" append="true" />
+				<set_faction_known faction="faction.alliance" known="false" />
+				<set_faction_known faction="faction.antigone" known="false" />
+				<set_faction_known faction="faction.argon" known="true" />
+				<set_faction_known faction="faction.hatikvah" known="false" />
+				<set_faction_known faction="faction.holyorder" known="false" />
+				<set_faction_known faction="faction.ministry" known="false" />
+				<set_faction_known faction="faction.paranid" known="false" />
+				<set_faction_known faction="faction.scaleplate" known="true" />
+				<set_faction_known faction="faction.xenon" known="true" />
+				<!-- Setup Faction Relations -->
+				<debug_to_file name="'AFS'" directory="'AFS'" text="'Setting Relations'" output="false" append="true" />
+				<!-- Players Rep with Faction -->
+				<set_faction_relation faction="faction.player" otherfaction="faction.alliance" value="0.0" />
+				<set_faction_relation faction="faction.player" otherfaction="faction.antigone" value="0.0" />
+				<set_faction_relation faction="faction.player" otherfaction="faction.argon" value="0.0" />
+				<set_faction_relation faction="faction.player" otherfaction="faction.hatikvah" value="0.0" />
+				<set_faction_relation faction="faction.player" otherfaction="faction.holyorder" value="0.0" />
+				<set_faction_relation faction="faction.player" otherfaction="faction.ministry" value="0.0" />
+				<set_faction_relation faction="faction.player" otherfaction="faction.paranid" value="0.0" />
+				<set_faction_relation faction="faction.player" otherfaction="faction.scaleplate" value="0.0032" />
+				<set_faction_relation faction="faction.player" otherfaction="faction.teladi" value="0.0" />
+				<!-- Factions Rep with Player -->
+				<set_faction_relation faction="faction.alliance" otherfaction="faction.player" value="0.0" />
+				<set_faction_relation faction="faction.antigone" otherfaction="faction.player" value="0.0" />
+				<set_faction_relation faction="faction.argon" otherfaction="faction.player" value="0.0" />
+				<set_faction_relation faction="faction.hatikvah" otherfaction="faction.player" value="0.0" />
+				<set_faction_relation faction="faction.holyorder" otherfaction="faction.player" value="0.0" />
+				<set_faction_relation faction="faction.ministry" otherfaction="faction.player" value="0.0" />
+				<set_faction_relation faction="faction.paranid" otherfaction="faction.player" value="0.0" />
+				<set_faction_relation faction="faction.scaleplate" otherfaction="faction.player" value="0.0032" />
+				<set_faction_relation faction="faction.teladi" otherfaction="faction.player" value="0.0" />
+				<signal_cue cue="Aspired_Freelance_Start_Setup" />
+				<debug_to_file name="'AFS'" directory="'AFS'" text="'Initial Setup Done'" output="false" append="true" />
+			</actions>
+		</cue>
+		<cue name="Aspired_Freelance_Start_Setup" module="x4ep1_gamestart_AFS">
+			<conditions>
+				<event_cue_signalled />
+			</conditions>
+			<actions>
+				<debug_to_file name="'AFS'" directory="'AFS'" text="' '" output="false" append="true" />
+				<debug_to_file name="'AFS'" directory="'AFS'" text="'Ship Setup'" output="false" append="true" />
+				<!-- Add Pilot to Player Ship -->
+				<find_ship name="$PlayerShip" owner="faction.player" space="player.zone" multiple="false" />
+				<create_control_entity name="$NewPilot" object="$PlayerShip" post="controlpost.aipilot">
+					<select race="[race.argon]" tags="tag.aipilot" />
+					<owner exact="faction.player" />
+				</create_control_entity>
+				<set_skill entity="$NewPilot" type="skilltype.piloting" exact="10" />
+				<set_skill entity="$NewPilot" type="skilltype.engineering" exact="5" />
+				<!-- Create 4 Transport Ships -->
+				<generate_loadout macro="macro.ship_arg_m_trans_container_01_b_macro" faction="faction.argon" wares="[ware.software_flightaNSistmk1, ware.software_dockmk2, ware.software_scannerlongrangemk2, ware.software_scannerobjectmk2, ware.software_targetmk1, ware.software_trademk1, 
+								ware.engine_arg_m_travel_01_mk3, ware.shield_arg_m_standard_01_mk2, ware.thruster_gen_m_allround_01_mk3]" level="1" result="$loadout" />
+				<do_all exact="4" counter="$i">
+					<create_ship name="$NewShip" macro="ship_arg_m_trans_container_01_b_macro" zone="player.zone">
+						<owner exact="faction.player" overridenpc="true" />
+						<loadout loadout="$loadout.{1}" />
+						<pilot>
+							<select faction="faction.argon" tags="tag.aipilot" />
+						</pilot>
+						<people>
+							<fillpercent exact="100" />
+							<person role="service" weight="75">
+								<select faction="faction.argon" tags="tag.crew" />
+							</person>
+							<person role="marine" weight="25">
+								<select faction="faction.argon" tags="tag.marine" />
+							</person>
+						</people>
+						<safepos object="player.ship" radius="1km" min="1km" max="7km" />
+					</create_ship>
+					<set_skill entity="$NewShip.pilot" type="skilltype.piloting" exact="10" />
+					<set_skill entity="$NewShip.pilot" type="skilltype.engineering" exact="5" />
+				</do_all>
+				<debug_to_file name="'AFS'" directory="'AFS'" text="'Ship Setup Done'" output="false" append="true" />
+			</actions>
+		</cue>
+	</cues>
+</mdscript>
